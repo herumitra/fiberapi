@@ -8,5 +8,5 @@ Di dalam Repository ini juga kami terapkan framework Fiber serta GORM untuk memp
 |     3| MySQL         |
 |     4| JWT           |
 
----
+> [!NOTE]
 > Gunakan Repository ini dengan bijak dan tidak merugikan pihak manapun.
