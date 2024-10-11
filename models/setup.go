@@ -11,7 +11,7 @@ var DB *gorm.DB
 
 // Create function ConnectDB
 func ConnectDB() {
-	db, err := gorm.Open(mysql.Open("root:@tcp(localhost:3306)/go_rest_fiber"))
+	db, err := gorm.Open(mysql.Open("root:Aliya01072023_@tcp(localhost:3306)/go_rest_fiber"))
 	if err != nil {
 		panic(err)
 	}
