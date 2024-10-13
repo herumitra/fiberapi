@@ -2,22 +2,21 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/herujci/fiberapi.git/controllers/bookcontroller"
-	"github.com/herujci/fiberapi.git/models"
+	"github.com/herumitra/fiberapi.git/database"
+	"github.com/herumitra/fiberapi.git/handlers"
 )
 
 func main() {
-	models.ConnectDB()
+	// Koneksi ke database
+	database.Connect()
+
+	// Inisialisasi Fiber app
 	app := fiber.New()
 
-	api := app.Group("/api")
-	book := api.Group("/books")
+	// Setup routes
+	handlers.AuthRoutes(app)
+	handlers.BranchRoutes(app)
 
-	book.Get("/", bookcontroller.Index)
-	book.Get("/:id", bookcontroller.Show)
-	book.Post("/", bookcontroller.Create)
-	book.Put("/:id", bookcontroller.Update)
-	book.Delete("/:id", bookcontroller.Delete)
-
-	app.Listen(":1199")
+	// Jalankan server
+	app.Listen(":3000")
 }
