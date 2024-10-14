@@ -10,3 +10,12 @@ Di dalam Repository ini juga kami terapkan framework Fiber serta dependensi GORM
 
 > [!NOTE]
 > Gunakan Repository ini dengan bijak dan tidak merugikan pihak manapun.
+##
+>[!NOTE]
+>Tambahkan file .env dalam direktori paling luar dari project di repositori ini, dan masukkan teks berikut di dalamnya.
+JWT_SECRET=
+DB_USER=
+DB_PASSWORD=
+DB_NAME=
+DB_PORT=
+DB_SERVER=
