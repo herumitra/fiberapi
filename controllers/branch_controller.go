@@ -6,6 +6,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/herumitra/fiberapi.git/database"
+	"github.com/herumitra/fiberapi.git/helpers"
 	"github.com/herumitra/fiberapi.git/models"
 )
 
@@ -52,7 +53,14 @@ func GetBranches(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.JSON(branches)
+	// Get book by id
+	response := helpers.Response{
+		Status:  "success",
+		Message: "Branch retrieved successfully",
+		Data:    &branches,
+	}
+	// Return response with status OK
+	return c.Status(fiber.StatusOK).JSON(response)
 }
 
 // Get single Branch by ID
