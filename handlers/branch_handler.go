@@ -5,10 +5,11 @@ import (
 	"github.com/herumitra/fiberapi.git/controllers"
 )
 
-func BranchRoutes(app *fiber.App) {
-	app.Post("/api/branch", controllers.CreateBranch)       // Create
-	app.Get("/api/branches", controllers.GetBranches)       // Read all
-	app.Get("/api/branch/:id", controllers.ShowBranch)      // Read one
-	app.Put("/api/branch/:id", controllers.UpdateBranch)    // Update
-	app.Delete("/api/branch/:id", controllers.DeleteBranch) // Delete
+func BranchRoutes(group fiber.Router) {
+	// Semua route branch akan dilindungi oleh JWT
+	group.Get("/branches", controllers.GetBranches)       // Read all branches
+	group.Get("/branch/:id", controllers.ShowBranch)      // Read one branch
+	group.Post("/branch", controllers.CreateBranch)       // Create a new branch
+	group.Put("/branch/:id", controllers.UpdateBranch)    // Update a branch
+	group.Delete("/branch/:id", controllers.DeleteBranch) // Delete a branch
 }

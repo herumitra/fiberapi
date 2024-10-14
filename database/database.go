@@ -20,5 +20,5 @@ func Connect() {
 
 	DB = connection
 
-	DB.AutoMigrate(&models.User{}, &models.LogFailure{}, &models.Branch{})
+	DB.AutoMigrate(&models.User{}, &models.LogFailure{}, &models.Branch{}, &models.TokenBlacklist{})
 }
