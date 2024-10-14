@@ -41,6 +41,10 @@ func main() {
 	branchGroup := app.Group("/api", middleware.JWTMiddleware)
 	handlers.BranchRoutes(branchGroup)
 
+	// Tambahkan proteksi JWT pada seluruh group unit
+	unitGroup := app.Group("/api", middleware.JWTMiddleware)
+	handlers.UnitRoutes(unitGroup)
+
 	// Jalankan penghapusan token kadaluarsa di goroutine terpisah
 	go deleteExpiredTokens()
 
