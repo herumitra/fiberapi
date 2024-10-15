@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -49,5 +50,5 @@ func main() {
 	go deleteExpiredTokens()
 
 	// Jalankan server
-	app.Listen(":3000")
+	app.Listen(":" + os.Getenv("SERVER_PORT"))
 }
