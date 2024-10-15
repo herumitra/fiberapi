@@ -1,10 +1,20 @@
 package controllers
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+	"github.com/herumitra/fiberapi.git/helpers"
+)
 
 // Function CreateUnit
 func CreateUnit(c *fiber.Ctx) error {
-	return c.SendStatus(200)
+	// Set format response
+	response := helpers.Response{
+		Status:  "success",
+		Message: "Unit created successfully",
+		Data:    "", //&branch,
+	}
+	// Return response with status Created
+	return c.Status(fiber.StatusCreated).JSON(response)
 }
 
 // Function GetUnits

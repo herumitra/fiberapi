@@ -21,25 +21,37 @@ func CreateBranch(c *fiber.Ctx) error {
 	var branch models.Branch
 
 	if err := c.BodyParser(&branch); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "Cannot parse JSON",
-			"error":   err.Error(),
-		})
+		// Set format response
+		response := helpers.Response{
+			Status:  "failure",
+			Message: "Cannot parse JSON",
+			Data:    "Error: " + err.Error(),
+		}
+		// Return response with status Bad Request
+		return c.Status(fiber.StatusBadRequest).JSON(response)
 	}
 
 	branch.ID = generateBranchID()
 
 	if err := database.DB.Create(&branch).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Could not create branch",
-			"error":   err.Error(),
-		})
+		// Set format response
+		response := helpers.Response{
+			Status:  "failure",
+			Message: "Could not create branch",
+			Data:    "Error: " + err.Error(),
+		}
+		// Return response with status Internal Server Error
+		return c.Status(fiber.StatusInternalServerError).JSON(response)
 	}
 
-	return c.JSON(fiber.Map{
-		"message": "Branch created successfully",
-		"branch":  branch,
-	})
+	// Set format response
+	response := helpers.Response{
+		Status:  "success",
+		Message: "Branch created successfully",
+		Data:    &branch,
+	}
+	// Return response with status Created
+	return c.Status(fiber.StatusCreated).JSON(response)
 }
 
 // Get all Branches
@@ -47,13 +59,17 @@ func GetBranches(c *fiber.Ctx) error {
 	var branches []models.Branch
 
 	if err := database.DB.Find(&branches).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Could not retrieve branches",
-			"error":   err.Error(),
-		})
+		// Set format response
+		response := helpers.Response{
+			Status:  "failure",
+			Message: "Could not retrieve branches",
+			Data:    "Error: " + err.Error(),
+		}
+		// Return response with status Internal Server Error
+		return c.Status(fiber.StatusInternalServerError).JSON(response)
 	}
 
-	// Get book by id
+	// Set format response
 	response := helpers.Response{
 		Status:  "success",
 		Message: "Branch retrieved successfully",
@@ -69,12 +85,24 @@ func ShowBranch(c *fiber.Ctx) error {
 	var branch models.Branch
 
 	if err := database.DB.First(&branch, "id = ?", id).Error; err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"message": "Branch not found",
-		})
+		// Set format response
+		response := helpers.Response{
+			Status:  "failure",
+			Message: "Could not retrieve branches",
+			Data:    "Branch not found",
+		}
+		// Return response with status Not Found
+		return c.Status(fiber.StatusNotFound).JSON(response)
 	}
 
-	return c.JSON(branch)
+	// Set format response
+	response := helpers.Response{
+		Status:  "success",
+		Message: "Branch retrieved successfully",
+		Data:    &branch,
+	}
+	// Return response with status OK
+	return c.Status(fiber.StatusOK).JSON(response)
 }
 
 // Update Branch
@@ -83,29 +111,46 @@ func UpdateBranch(c *fiber.Ctx) error {
 	var branch models.Branch
 
 	if err := database.DB.First(&branch, "id = ?", id).Error; err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"message": "Branch not found",
-		})
+		// Set format response
+		response := helpers.Response{
+			Status:  "failure",
+			Message: "Could not retrieve branches",
+			Data:    "Branch not found",
+		}
+		// Return response with status Not Found
+		return c.Status(fiber.StatusNotFound).JSON(response)
 	}
 
 	if err := c.BodyParser(&branch); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "Cannot parse JSON",
-			"error":   err.Error(),
-		})
+		// Set format response
+		response := helpers.Response{
+			Status:  "failure",
+			Message: "Cannot parse JSON",
+			Data:    "Error: " + err.Error(),
+		}
+		// Return response with status Bad Request
+		return c.Status(fiber.StatusBadRequest).JSON(response)
 	}
 
 	if err := database.DB.Save(&branch).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Could not update branch",
-			"error":   err.Error(),
-		})
+		// Set format response
+		response := helpers.Response{
+			Status:  "failure",
+			Message: "Could not update branch",
+			Data:    "Error: " + err.Error(),
+		}
+		// Return response with status Internal Server Error
+		return c.Status(fiber.StatusInternalServerError).JSON(response)
 	}
 
-	return c.JSON(fiber.Map{
-		"message": "Branch updated successfully",
-		"branch":  branch,
-	})
+	// Set format response
+	response := helpers.Response{
+		Status:  "success",
+		Message: "Branch update successfully",
+		Data:    &branch,
+	}
+	// Return response with status OK
+	return c.Status(fiber.StatusOK).JSON(response)
 }
 
 // Delete Branch
@@ -114,19 +159,33 @@ func DeleteBranch(c *fiber.Ctx) error {
 	var branch models.Branch
 
 	if err := database.DB.First(&branch, "id = ?", id).Error; err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"message": "Branch not found",
-		})
+		// Set format response
+		response := helpers.Response{
+			Status:  "failure",
+			Message: "Could not retrieve branches",
+			Data:    "Branch not found",
+		}
+		// Return response with status Not Found
+		return c.Status(fiber.StatusNotFound).JSON(response)
 	}
 
 	if err := database.DB.Delete(&branch).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Could not delete branch",
-			"error":   err.Error(),
-		})
+		// Set format response
+		response := helpers.Response{
+			Status:  "failure",
+			Message: "Could not retrieve branches",
+			Data:    "Branch not found",
+		}
+		// Return response with status Internal Server Error
+		return c.Status(fiber.StatusInternalServerError).JSON(response)
 	}
 
-	return c.JSON(fiber.Map{
-		"message": "Branch deleted successfully",
-	})
+	// Set format response
+	response := helpers.Response{
+		Status:  "success",
+		Message: "Branch deleted successfully",
+		Data:    "Deleted id: " + id,
+	}
+	// Return response with status OK
+	return c.Status(fiber.StatusOK).JSON(response)
 }
