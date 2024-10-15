@@ -9,7 +9,7 @@ Di dalam repositori ini juga kami terapkan framework `Fiber` serta dependensi `G
 |     4| JWT           |
 
 
->Tambahkan file .env dalam direktori paling luar dari project di repositori ini, dan masukkan teks berikut di dalamnya.
+>Tambahkan file `.env` dalam direktori paling luar dari project di repositori ini, dan masukkan teks berikut di dalamnya.
 
 ```bash
 JWT_SECRET=123456qwerty
