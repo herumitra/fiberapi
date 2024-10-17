@@ -29,7 +29,22 @@ func CreateSupplier(c *fiber.Ctx) error {
 		// Return response with status Bad Request
 		return c.Status(fiber.StatusBadRequest).JSON(response)
 	}
+
+	// Check if the 'name' already exists with the same 'id_branch'
+	var existSupplier models.Supplier
+	if err := database.DB.Where("name = ? AND id_branch = ?", supplier.Name, helpers.GetBranchId(c)).First(&existSupplier).Error; err == nil {
+		// Name already exists within the same branch
+		response := helpers.Response{
+			Status:  "failure",
+			Message: "Name already exists in this branch",
+			Data:    "The provided name is already used by another unit in the same supplier",
+		}
+		// Return response with status Conflict (409)
+		return c.Status(fiber.StatusConflict).JSON(response)
+	}
+
 	supplier.ID = GenerateSupplierID()
+	supplier.BranchId = helpers.GetBranchId(c)
 	if err := database.DB.Create(&supplier).Error; err != nil {
 		// Set format response
 		response := helpers.Response{
@@ -53,7 +68,7 @@ func CreateSupplier(c *fiber.Ctx) error {
 // Get Suppliers
 func GetSuppliers(c *fiber.Ctx) error {
 	var suppliers []models.Supplier
-	if err := database.DB.Find(&suppliers).Error; err != nil {
+	if err := database.DB.Find(&suppliers, "branch_id = ?", helpers.GetBranchId(c)).Error; err != nil {
 		// Set format response
 		response := helpers.Response{
 			Status:  "failure",
@@ -101,6 +116,7 @@ func ShowSupplier(c *fiber.Ctx) error {
 func UpdateSupplier(c *fiber.Ctx) error {
 	id := c.Params("id")
 	var supplier models.Supplier
+	supplier.BranchId = helpers.GetBranchId(c)
 	if err := database.DB.First(&supplier, "id = ?", id).Error; err != nil {
 		// Set format response
 		response := helpers.Response{

@@ -5,10 +5,10 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/herumitra/fiberapi.git/database"
-	"github.com/herumitra/fiberapi.git/handlers"
-	"github.com/herumitra/fiberapi.git/middleware"
-	"github.com/herumitra/fiberapi.git/models"
+	database "github.com/herumitra/fiberapi.git/database"
+	handlers "github.com/herumitra/fiberapi.git/handlers"
+	middleware "github.com/herumitra/fiberapi.git/middleware"
+	models "github.com/herumitra/fiberapi.git/models"
 	"github.com/joho/godotenv"
 )
 

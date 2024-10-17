@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/herumitra/fiberapi.git/controllers"
+	controllers "github.com/herumitra/fiberapi.git/controllers"
 )
 
 func BranchRoutes(group fiber.Router) {

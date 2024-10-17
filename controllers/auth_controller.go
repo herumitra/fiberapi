@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
-	"github.com/herumitra/fiberapi.git/database"
-	"github.com/herumitra/fiberapi.git/helpers"
+	jwt "github.com/golang-jwt/jwt/v5"
+	database "github.com/herumitra/fiberapi.git/database"
+	helpers "github.com/herumitra/fiberapi.git/helpers"
 	models "github.com/herumitra/fiberapi.git/models"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -104,14 +104,14 @@ func Login(c *fiber.Ctx) error {
 		}
 		database.DB.Create(&logFailure)
 
-		// 5. Check number of login failures in the last 24 hours
+		// 4. Check number of login failures in the last 24 hours
 		var failureCount int64
 		startOfDay := time.Now().Truncate(24 * time.Hour)
 		database.DB.Model(&models.LogFailure{}).
 			Where("username = ? AND timestamp >= ?", data["username"], startOfDay).
 			Count(&failureCount)
 
-		// 6. If failure count >= 3, update user status to inactive
+		// 5. If failure count >= 3, update user status to inactive
 		if failureCount >= 3 {
 			user.StatusUser = "inactive"
 			database.DB.Save(&user)
@@ -135,7 +135,7 @@ func Login(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(response)
 	}
 
-	// 4. Generate JWT token if login is successful
+	// 6. Generate JWT token if login is successful
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["username"] = user.Username

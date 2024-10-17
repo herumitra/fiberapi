@@ -31,8 +31,21 @@ func CreateUnit(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(response)
 	}
 
-	unit.ID = generateUnitID()
+	// Check if the 'name' already exists with the same 'id_branch'
+	var existingUnit models.Unit
+	if err := database.DB.Where("name = ? AND id_branch = ?", unit.Name, helpers.GetBranchId(c)).First(&existingUnit).Error; err == nil {
+		// Name already exists within the same branch
+		response := helpers.Response{
+			Status:  "failure",
+			Message: "Name already exists in this branch",
+			Data:    "The provided name is already used by another unit in the same branch",
+		}
+		// Return response with status Conflict (409)
+		return c.Status(fiber.StatusConflict).JSON(response)
+	}
 
+	unit.ID = generateUnitID()
+	unit.BranchId = helpers.GetBranchId(c)
 	if err := database.DB.Create(&unit).Error; err != nil {
 		// Set format response
 		response := helpers.Response{
@@ -57,7 +70,7 @@ func CreateUnit(c *fiber.Ctx) error {
 // Function GetUnits
 func GetUnits(c *fiber.Ctx) error {
 	var units []models.Unit
-	if err := database.DB.Find(&units).Error; err != nil {
+	if err := database.DB.Find(&units, "branch_id = ?", helpers.GetBranchId(c)).Error; err != nil {
 		// Set format response
 		response := helpers.Response{
 			Status:  "failure",
@@ -106,6 +119,7 @@ func ShowUnit(c *fiber.Ctx) error {
 func UpdateUnit(c *fiber.Ctx) error {
 	id := c.Params("id")
 	var unit models.Unit
+	unit.BranchId = helpers.GetBranchId(c)
 	if err := database.DB.First(&unit, "id = ?", id).Error; err != nil {
 		// Set format response
 		response := helpers.Response{
