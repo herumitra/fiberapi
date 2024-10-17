@@ -10,17 +10,16 @@ import (
 	models "github.com/herumitra/fiberapi.git/models"
 )
 
-// Function generateUnitID
-func generateUnitID() string {
+// Function generateSupplierID
+func GenerateSupplierID() string {
 	now := time.Now()
-	return fmt.Sprintf("UNT%s", now.Format("02012006150405"))
+	return fmt.Sprintf("SPL%s", now.Format("02012006150405"))
 }
 
-// Function CreateUnit
-func CreateUnit(c *fiber.Ctx) error {
-	var unit models.Unit
-
-	if err := c.BodyParser(&unit); err != nil {
+// Create Supplier
+func CreateSupplier(c *fiber.Ctx) error {
+	var supplier models.Supplier
+	if err := c.BodyParser(&supplier); err != nil {
 		// Set format response
 		response := helpers.Response{
 			Status:  "failure",
@@ -30,63 +29,35 @@ func CreateUnit(c *fiber.Ctx) error {
 		// Return response with status Bad Request
 		return c.Status(fiber.StatusBadRequest).JSON(response)
 	}
-
-	unit.ID = generateUnitID()
-
-	if err := database.DB.Create(&unit).Error; err != nil {
+	supplier.ID = GenerateSupplierID()
+	if err := database.DB.Create(&supplier).Error; err != nil {
 		// Set format response
 		response := helpers.Response{
 			Status:  "failure",
-			Message: "Could not create unit",
+			Message: "Could not create supplier",
 			Data:    "Error: " + err.Error(),
 		}
 		// Return response with status Internal Server Error
 		return c.Status(fiber.StatusInternalServerError).JSON(response)
 	}
-
 	// Set format response
 	response := helpers.Response{
 		Status:  "success",
-		Message: "Unit created successfully",
-		Data:    &unit,
+		Message: "Supplier created successfully",
+		Data:    &supplier,
 	}
 	// Return response with status Created
 	return c.Status(fiber.StatusCreated).JSON(response)
 }
 
-// Function GetUnits
-func GetUnits(c *fiber.Ctx) error {
-	var units []models.Unit
-	if err := database.DB.Find(&units).Error; err != nil {
+// Get Suppliers
+func GetSuppliers(c *fiber.Ctx) error {
+	var suppliers []models.Supplier
+	if err := database.DB.Find(&suppliers).Error; err != nil {
 		// Set format response
 		response := helpers.Response{
 			Status:  "failure",
-			Message: "Could not retrieve units",
-			Data:    "Error: " + err.Error(),
-		}
-		// Return response with status Internal Server Error
-		return c.Status(fiber.StatusInternalServerError).JSON(response)
-	}
-
-	// Set format response
-	response := helpers.Response{
-		Status:  "success",
-		Message: "Units retrieved successfully",
-		Data:    &units,
-	}
-	// Return response with status OK
-	return c.Status(fiber.StatusOK).JSON(response)
-}
-
-// Function ShowUnit
-func ShowUnit(c *fiber.Ctx) error {
-	id := c.Params("id")
-	var unit models.Unit
-	if err := database.DB.First(&unit, "id = ?", id).Error; err != nil {
-		// Set format response
-		response := helpers.Response{
-			Status:  "failure",
-			Message: "Could not retrieve units",
+			Message: "Could not retrieve suppliers",
 			Data:    "Error: " + err.Error(),
 		}
 		// Return response with status Internal Server Error
@@ -95,28 +66,52 @@ func ShowUnit(c *fiber.Ctx) error {
 	// Set format response
 	response := helpers.Response{
 		Status:  "success",
-		Message: "Unit retrieved successfully",
-		Data:    &unit,
+		Message: "Suppliers retrieved successfully",
+		Data:    &suppliers,
 	}
 	// Return response with status OK
 	return c.Status(fiber.StatusOK).JSON(response)
 }
 
-// Function UpdateUnit
-func UpdateUnit(c *fiber.Ctx) error {
+// Get single Supplier by ID
+func ShowSupplier(c *fiber.Ctx) error {
 	id := c.Params("id")
-	var unit models.Unit
-	if err := database.DB.First(&unit, "id = ?", id).Error; err != nil {
+	var supplier models.Supplier
+	if err := database.DB.First(&supplier, "id = ?", id).Error; err != nil {
 		// Set format response
 		response := helpers.Response{
 			Status:  "failure",
-			Message: "Could not retrieve units",
+			Message: "Could not retrieve suppliers",
 			Data:    "Error: " + err.Error(),
 		}
 		// Return response with status Internal Server Error
 		return c.Status(fiber.StatusInternalServerError).JSON(response)
 	}
-	if err := c.BodyParser(&unit); err != nil {
+	// Set format response
+	response := helpers.Response{
+		Status:  "success",
+		Message: "Supplier retrieved successfully",
+		Data:    &supplier,
+	}
+	// Return response with status OK
+	return c.Status(fiber.StatusOK).JSON(response)
+}
+
+// Update Supplier
+func UpdateSupplier(c *fiber.Ctx) error {
+	id := c.Params("id")
+	var supplier models.Supplier
+	if err := database.DB.First(&supplier, "id = ?", id).Error; err != nil {
+		// Set format response
+		response := helpers.Response{
+			Status:  "failure",
+			Message: "Could not retrieve suppliers",
+			Data:    "Error: " + err.Error(),
+		}
+		// Return response with status Internal Server Error
+		return c.Status(fiber.StatusInternalServerError).JSON(response)
+	}
+	if err := c.BodyParser(&supplier); err != nil {
 		// Set format response
 		response := helpers.Response{
 			Status:  "failure",
@@ -126,11 +121,11 @@ func UpdateUnit(c *fiber.Ctx) error {
 		// Return response with status Bad Request
 		return c.Status(fiber.StatusBadRequest).JSON(response)
 	}
-	if err := database.DB.Save(&unit).Error; err != nil {
+	if err := database.DB.Save(&supplier).Error; err != nil {
 		// Set format response
 		response := helpers.Response{
 			Status:  "failure",
-			Message: "Could not update unit",
+			Message: "Could not update supplier",
 			Data:    "Error: " + err.Error(),
 		}
 		// Return response with status Internal Server Error
@@ -139,32 +134,32 @@ func UpdateUnit(c *fiber.Ctx) error {
 	// Set format response
 	response := helpers.Response{
 		Status:  "success",
-		Message: "Unit updated successfully",
-		Data:    &unit,
+		Message: "Supplier updated successfully",
+		Data:    &supplier,
 	}
 	// Return response with status OK
 	return c.Status(fiber.StatusOK).JSON(response)
 }
 
-// Function DeleteUnit
-func DeleteUnit(c *fiber.Ctx) error {
+// Delete Supplier
+func DeleteSupplier(c *fiber.Ctx) error {
 	id := c.Params("id")
-	var unit models.Unit
-	if err := database.DB.First(&unit, "id = ?", id).Error; err != nil {
+	var supplier models.Supplier
+	if err := database.DB.First(&supplier, "id = ?", id).Error; err != nil {
 		// Set format response
 		response := helpers.Response{
 			Status:  "failure",
-			Message: "Could not retrieve units",
+			Message: "Could not retrieve suppliers",
 			Data:    "Error: " + err.Error(),
 		}
 		// Return response with status Internal Server Error
 		return c.Status(fiber.StatusInternalServerError).JSON(response)
 	}
-	if err := database.DB.Delete(&unit).Error; err != nil {
+	if err := database.DB.Delete(&supplier).Error; err != nil {
 		// Set format response
 		response := helpers.Response{
 			Status:  "failure",
-			Message: "Could not delete unit",
+			Message: "Could not delete supplier",
 			Data:    "Error: " + err.Error(),
 		}
 		// Return response with status Internal Server Error
@@ -173,8 +168,8 @@ func DeleteUnit(c *fiber.Ctx) error {
 	// Set format response
 	response := helpers.Response{
 		Status:  "success",
-		Message: "Unit deleted successfully",
-		Data:    &unit,
+		Message: "Supplier deleted successfully",
+		Data:    &supplier,
 	}
 	// Return response with status OK
 	return c.Status(fiber.StatusOK).JSON(response)

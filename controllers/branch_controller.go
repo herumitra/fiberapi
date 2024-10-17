@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/herumitra/fiberapi.git/database"
-	"github.com/herumitra/fiberapi.git/helpers"
-	"github.com/herumitra/fiberapi.git/models"
+	database "github.com/herumitra/fiberapi.git/database"
+	helpers "github.com/herumitra/fiberapi.git/helpers"
+	models "github.com/herumitra/fiberapi.git/models"
 )
 
 // Fungsi untuk generate ID branch dengan format branch[tanggal][bulan][tahun][jam][menit][detik]

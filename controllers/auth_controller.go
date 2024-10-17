@@ -9,17 +9,18 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/herumitra/fiberapi.git/database"
-	"github.com/herumitra/fiberapi.git/models"
+	"github.com/herumitra/fiberapi.git/helpers"
+	models "github.com/herumitra/fiberapi.git/models"
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Fungsi untuk generate ID user dengan format mitra[tanggal][bulan][tahun][jam][menit][detik]
+// Generate ID user in format mitra[date][month][year][hour][minute][second]
 func generateUserID() string {
 	now := time.Now()
 	return fmt.Sprintf("MITRA%s", now.Format("02012006150405"))
 }
 
-// Register user baru
+// Registration user
 func Register(c *fiber.Ctx) error {
 	var data map[string]string
 
@@ -39,16 +40,24 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	if err := database.DB.Create(&user).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Failed to register user",
-			"error":   err.Error(),
-		})
+		// Set format response
+		response := helpers.Response{
+			Status:  "failure",
+			Message: "Failed to register user",
+			Data:    "Error: " + err.Error(),
+		}
+		// Return response with status Internal Server Error
+		return c.Status(fiber.StatusInternalServerError).JSON(response)
 	}
 
-	return c.JSON(fiber.Map{
-		"message": "User registered successfully",
-		"user_id": user.ID,
-	})
+	// Set format response
+	response := helpers.Response{
+		Status:  "success",
+		Message: "User registered successfully",
+		Data:    "Registered user ID: " + user.ID,
+	}
+	// Return response with status Created
+	return c.Status(fiber.StatusCreated).JSON(response)
 }
 
 // Login user
@@ -64,16 +73,26 @@ func Login(c *fiber.Ctx) error {
 
 	// 1. Check if user exists and status is active
 	if err := database.DB.Where("username = ? AND id_branch = ?", data["username"], data["id_branch"]).First(&user).Error; err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"message": "User not found or branch mismatch",
-		})
+		// Set format response
+		response := helpers.Response{
+			Status:  "failure",
+			Message: "Could not login user",
+			Data:    "User not found or branch mismatch",
+		}
+		// Return response with status Not Found
+		return c.Status(fiber.StatusNotFound).JSON(response)
 	}
 
 	// 2. Check if user is active
 	if user.StatusUser != "active" {
-		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
-			"message": "User is inactive, please contact operator",
-		})
+		// Set format response
+		response := helpers.Response{
+			Status:  "failure",
+			Message: "Could not login user",
+			Data:    "User is inactive, please contact operator",
+		}
+		// Return response with status Forbidden
+		return c.Status(fiber.StatusForbidden).JSON(response)
 	}
 
 	// 3. Check password
@@ -96,14 +115,24 @@ func Login(c *fiber.Ctx) error {
 		if failureCount >= 3 {
 			user.StatusUser = "inactive"
 			database.DB.Save(&user)
-			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
-				"message": "Too many failed login attempts, user deactivated",
-			})
+			// Set format response
+			response := helpers.Response{
+				Status:  "failure",
+				Message: "Could not login user",
+				Data:    "Too many failed login attempts, user deactivated",
+			}
+			// Return response with status Forbidden
+			return c.Status(fiber.StatusForbidden).JSON(response)
 		}
 
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "Invalid credentials",
-		})
+		// Set format response
+		response := helpers.Response{
+			Status:  "failure",
+			Message: "Could not login user",
+			Data:    "Error: Invalid credentials",
+		}
+		// Return response with status Bad Request
+		return c.Status(fiber.StatusBadRequest).JSON(response)
 	}
 
 	// 4. Generate JWT token if login is successful
@@ -115,14 +144,24 @@ func Login(c *fiber.Ctx) error {
 
 	t, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Could not login",
-		})
+		// Set format response
+		response := helpers.Response{
+			Status:  "failure",
+			Message: "Could not login",
+			Data:    "Error: " + err.Error(),
+		}
+		// Return response with status Internal Server Error
+		return c.Status(fiber.StatusInternalServerError).JSON(response)
 	}
 
-	return c.JSON(fiber.Map{
-		"token": t,
-	})
+	// Set format response
+	response := helpers.Response{
+		Status:  "success",
+		Message: "Login successfully",
+		Data:    "Bearer " + t,
+	}
+	// Return response with status OK
+	return c.Status(fiber.StatusOK).JSON(response)
 }
 
 // Logout user
@@ -130,9 +169,17 @@ func Logout(c *fiber.Ctx) error {
 	// Ambil token dari header
 	tokenString := c.Get("Authorization")
 	if tokenString == "" {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Token tidak diberikan",
-		})
+		// return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+		// 	"message": "Token tidak diberikan",
+		// })
+		// Set format response
+		response := helpers.Response{
+			Status:  "failure",
+			Message: "Could not logout user",
+			Data:    "Error: Token not provided",
+		}
+		// Return response with status Internal Server Error
+		return c.Status(fiber.StatusUnauthorized).JSON(response)
 	}
 
 	// Hapus "Bearer " dari token jika ada
@@ -143,10 +190,14 @@ func Logout(c *fiber.Ctx) error {
 	// Cek apakah token sudah ada di blacklist
 	var existingToken models.TokenBlacklist
 	if err := database.DB.Where("token = ?", tokenString).First(&existingToken).Error; err == nil {
-		// Token sudah ada di blacklist
-		return c.Status(fiber.StatusConflict).JSON(fiber.Map{
-			"message": "Token sudah di-logout sebelumnya",
-		})
+		// Set format response
+		response := helpers.Response{
+			Status:  "failure",
+			Message: "Could logout user",
+			Data:    "Error: Token already logged out",
+		}
+		// Return response with status Internal Server Error
+		return c.Status(fiber.StatusConflict).JSON(response)
 	}
 
 	// Simpan token di blacklist
@@ -155,12 +206,22 @@ func Logout(c *fiber.Ctx) error {
 		Token:     tokenString,
 		ExpiresAt: time.Now().Add(time.Hour * 8),
 	}).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Gagal menyimpan token ke blacklist",
-		})
+		// Set format response
+		response := helpers.Response{
+			Status:  "failure",
+			Message: "Could not logout user",
+			Data:    "Error: Failed to save token to blacklist",
+		}
+		// Return response with status Internal Server Error
+		return c.Status(fiber.StatusInternalServerError).JSON(response)
 	}
 
-	return c.JSON(fiber.Map{
-		"message": "Logged out successfully",
-	})
+	// Set format response
+	response := helpers.Response{
+		Status:  "success",
+		Message: "Logged out successfully",
+		Data:    "User logged out successfully",
+	}
+	// Return response with status OK
+	return c.Status(fiber.StatusOK).JSON(response)
 }

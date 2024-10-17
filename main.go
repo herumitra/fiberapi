@@ -21,32 +21,32 @@ func deleteExpiredTokens() {
 }
 
 func main() {
-	// Muat file .env
+	// Load .env file
 	if err := godotenv.Load(); err != nil {
 		panic("Error loading .env file")
 	}
 
-	// Koneksi ke database
+	// Inialisasi database
 	database.Connect()
 
 	// Inisialisasi Fiber app
 	app := fiber.New()
 
-	// Setup routes untuk autentikasi
+	// Setup routes auth
 	handlers.AuthRoutes(app)
 
-	// Memanggil middleware untuk token blacklist
+	// Setup middleware token blacklist
 	app.Use(middleware.TokenBlacklist)
 
-	// Tambahkan proteksi JWT pada seluruh group branch
+	// Add protection JWT for group branch
 	branchGroup := app.Group("/api", middleware.JWTMiddleware)
 	handlers.BranchRoutes(branchGroup)
 
-	// Tambahkan proteksi JWT pada seluruh group unit
+	// Add protection JWT for group unit
 	unitGroup := app.Group("/api", middleware.JWTMiddleware)
 	handlers.UnitRoutes(unitGroup)
 
-	// Jalankan penghapusan token kadaluarsa di goroutine terpisah
+	// Running delete expired tokens in separate goroutine
 	go deleteExpiredTokens()
 
 	// Jalankan server
