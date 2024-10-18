@@ -34,7 +34,7 @@ func Register(c *fiber.Ctx) error {
 		ID:          generateUserID(),
 		Username:    data["username"],
 		Password:    string(hashedPassword),
-		IDBranch:    data["id_branch"],
+		BranchId:    data["branch_id"],
 		StatusUser:  "active",
 		Authorities: "user",
 	}
@@ -72,7 +72,7 @@ func Login(c *fiber.Ctx) error {
 	var user models.User
 
 	// 1. Check if user exists and status is active
-	if err := database.DB.Where("username = ? AND id_branch = ?", data["username"], data["id_branch"]).First(&user).Error; err != nil {
+	if err := database.DB.Where("username = ? AND branch_id = ?", data["username"], data["branch_id"]).First(&user).Error; err != nil {
 		// Set format response
 		response := helpers.Response{
 			Status:  "failure",
@@ -139,7 +139,7 @@ func Login(c *fiber.Ctx) error {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["username"] = user.Username
-	claims["id_branch"] = user.IDBranch
+	claims["branch_id"] = user.BranchId
 	claims["exp"] = time.Now().Add(time.Hour * 8).Unix() // token valid for 8 hours
 
 	t, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
