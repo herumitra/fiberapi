@@ -17,5 +17,6 @@ type Branch struct {
 	BankName      string `gorm:"type:varchar(100);" json:"bank_name"`
 	BankId        string `gorm:"type:varchar(25);" json:"bank_id"`
 	BankAccount   string `gorm:"type:varchar(100);" json:"bank_account"`
+	TaxPercentage int    `gorm:"type:int(3);default:0" json:"tax_percentage"`
 	JournalMethod string `gorm:"type:enum('manual','automatic'); default:'automatic'" json:"journal_method" validate:"required"`
 }

@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/herumitra/fiberapi.git/controllers"
+	controllers "github.com/herumitra/fiberapi.git/controllers"
 )
 
 func SupplierRoutes(app *fiber.App) {
