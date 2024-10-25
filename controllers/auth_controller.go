@@ -101,7 +101,7 @@ func Login(c *fiber.Ctx) error {
 		logFailure := models.LogFailure{
 			ID:        0,
 			Username:  data["username"],
-			Timestamp: time.Now().Format("2006-01-02 15:04:05"),
+			Timestamp: time.Now(),
 		}
 		database.DB.Create(&logFailure)
 
