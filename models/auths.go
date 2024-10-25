@@ -59,7 +59,7 @@ func (b *Branch) BeforeCreate(tx *gorm.DB) (err error) {
 type LogFailure struct {
 	ID        uint      `gorm:"primaryKey;autoIncrement" json:"id"`
 	Username  string    `gorm:"type:varchar(100);not null" json:"username"`
-	Timestamp time.Time `gorm:"not null;default:CURRENT_TIMESTAMP" json:"timestamp"`
+	Timestamp time.Time `gorm:"not null;default:CURRENT_TIMESTAMP"json:"timestamp"`
 }
 
 // TokenBlacklist model
