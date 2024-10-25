@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/herumitra/fiberapi.git/database"
+	database "github.com/herumitra/fiberapi.git/database"
 )
 
 func TokenBlacklist(c *fiber.Ctx) error {

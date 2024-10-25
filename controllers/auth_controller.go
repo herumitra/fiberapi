@@ -99,6 +99,7 @@ func Login(c *fiber.Ctx) error {
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(data["password"])); err != nil {
 		// Log failure if password is incorrect
 		logFailure := models.LogFailure{
+			ID:        0,
 			Username:  data["username"],
 			Timestamp: time.Now().Format("2006-01-02 15:04:05"),
 		}

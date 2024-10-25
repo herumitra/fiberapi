@@ -7,6 +7,47 @@ import (
 	models "github.com/herumitra/fiberapi.git/models"
 )
 
+// ValidateCategory is a function to validate struct Data of Item Category
+func ValidateItemCategory(item_category models.ItemCategory) []*helpers.ErrorResponse {
+	var validate = validator.New()
+	var errors []*helpers.ErrorResponse
+	err := validate.Struct(item_category)
+
+	if err != nil {
+		for _, err := range err.(validator.ValidationErrors) {
+			var element helpers.ErrorResponse
+			element.FailedField = err.StructNamespace()
+			element.Tag = err.Tag()
+			element.Value = err.Param()
+			errors = append(errors, &element)
+		}
+	}
+
+	return errors
+}
+
+// ValidateItemCategoryField is a middleware to validate field of Category
+func ValidateItemCategoryField(c *fiber.Ctx) error {
+
+	item_category := new(models.ItemCategory)
+
+	if err := c.BodyParser(item_category); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": err.Error(),
+		})
+
+	}
+
+	errors := ValidateItemCategory(*item_category)
+	if errors != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(errors)
+
+	}
+
+	//Return Next Function
+	return c.Next()
+}
+
 // ValidateUnit is a function to validate struct Data of Unit
 func ValidateUnit(unit models.Unit) []*helpers.ErrorResponse {
 	var validate = validator.New()

@@ -1,3 +1,5 @@
+filippo.io/edwards25519 v1.1.0 h1:FNf4tywRC1HmFuKW5xopWpigGjJKiJSV0Cqo0cJWDaA=
+filippo.io/edwards25519 v1.1.0/go.mod h1:BxyFTGdWcka3PhytdK4V28tE5sGfRvvvRV7EaN4VDT4=
 github.com/andybalholm/brotli v1.0.0/go.mod h1:loMXtMfwqflxFJPmdbJO0a3KNoPuLBgiu3qAvBg8x/Y=
 github.com/andybalholm/brotli v1.0.5 h1:8uQZIdzKmjc/iuPu7O2ioW48L81FgatrcpfFmiq/cCs=
 github.com/andybalholm/brotli v1.0.5/go.mod h1:fO7iG3H7G2nSZ7m0zPUDn85XEX2GTukHGRSepvi9Eig=
@@ -9,10 +11,14 @@ github.com/go-playground/validator v9.31.0+incompatible h1:UA72EPEogEnq76ehGdEDp
 github.com/go-playground/validator v9.31.0+incompatible/go.mod h1:yrEkQXlcI+PugkyDjY2bRrL/UBU4f3rvrgkN3V8JEig=
 github.com/go-sql-driver/mysql v1.7.0 h1:ueSltNNllEqE3qcWBTD0iQd3IpL/6U+mJxLkazJ7YPc=
 github.com/go-sql-driver/mysql v1.7.0/go.mod h1:OXbVy3sEdcQ2Doequ6Z5BW6fXNQTmx+9S1MCJN5yJMI=
+github.com/go-sql-driver/mysql v1.8.1 h1:LedoTUt/eveggdHS9qUFC1EFSa8bU2+1pZjSRpvNJ1Y=
+github.com/go-sql-driver/mysql v1.8.1/go.mod h1:wEBSXgmK//2ZFJyE+qWnIsVGmvmEKlqwuVSjsCm7DZg=
 github.com/gofiber/fiber v1.14.6 h1:QRUPvPmr8ijQuGo1MgupHBn8E+wW0IKqiOvIZPtV70o=
 github.com/gofiber/fiber v1.14.6/go.mod h1:Yw2ekF1YDPreO9V6TMYjynu94xRxZBdaa8X5HhHsjCM=
 github.com/gofiber/fiber/v2 v2.52.5 h1:tWoP1MJQjGEe4GB5TUGOi7P2E0ZMMRx5ZTG4rT+yGMo=
 github.com/gofiber/fiber/v2 v2.52.5/go.mod h1:KEOE+cXMhXG0zHc9d8+E38hoX+ZN7bhOtgeF2oT6jrQ=
+github.com/gofiber/storage/mysql/v2 v2.0.1 h1:tZXQsZCXiOjbLrJf0HPzPklG/fu21GB/HhnavP3Ep0I=
+github.com/gofiber/storage/mysql/v2 v2.0.1/go.mod h1:Ki17rR2fH6EuCdCAbZOYNNEVqTHZge6bYwrZjcPws+E=
 github.com/gofiber/utils v0.0.10 h1:3Mr7X7JdCUo7CWf/i5sajSaDmArEDtti8bM1JUVso2U=
 github.com/gofiber/utils v0.0.10/go.mod h1:9J5aHFUIjq0XfknT4+hdSMG6/jzfaAgCu4HEbWDeBlo=
 github.com/golang-jwt/jwt/v5 v5.2.1 h1:OuVbFODueb089Lh128TAcimifWaLhJwVflnrgM17wHk=
